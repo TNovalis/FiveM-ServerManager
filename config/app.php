@@ -12,7 +12,7 @@ return [
     /*
      * Here goes the application version.
      */
-    'version' => '0.0.4',
+    'version' => '0.0.5',
 
     /*
      * Here goes the application default command. By default
@@ -26,7 +26,7 @@ return [
      * If true, development commands won't be available as the app
      * will be in the production environment.
      */
-    'production' => false,
+    'production' => true,
 
     /*
      * If true, scheduler commands will be available.
