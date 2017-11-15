@@ -1,0 +1,12 @@
+/vendor/
+.idea/*
+
+.idea/codeStyleSettings.xml
+
+.twgit_features_subject
+
+/builds/
+/database/database.sqlite
+
+.phpstorm.meta.php
+_ide_helper.php
