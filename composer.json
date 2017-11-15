@@ -3,10 +3,6 @@
     "description": "FiveM Server Manager",
     "keywords": ["fivem", "game", "server", "manager"],
     "license": "MIT",
-    "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
-    },
     "authors": [
         {
             "name": "Tom (Novalis)",
