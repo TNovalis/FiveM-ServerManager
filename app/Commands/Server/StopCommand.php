@@ -14,7 +14,7 @@ class StopCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'server:stop';
+    protected $signature = 'server:stop {name? : The server name}';
 
     /**
      * The console command description.
