@@ -35,7 +35,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php fsm storage:create"
+            "php fsm files:create"
         ]
     },
     "bin": ["fsm"]

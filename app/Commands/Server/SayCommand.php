@@ -7,21 +7,21 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
-class StopCommand extends Command
+class SayCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'server:stop {name? : The server name} {--no-warning : Don\'t send the warning}';
+    protected $signature = 'server:say {name?} {message?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Stop a server';
+    protected $description = 'Send a message to the server';
 
     /**
      * Create a new command instance.
@@ -41,7 +41,6 @@ class StopCommand extends Command
     public function handle(): void
     {
         try {
-            $settings = json_decode(Storage::get('settings.json'), true);
             $servers = json_decode(Storage::get('servers.json'), true);
         } catch (FileNotFoundException $e) {
             $this->error('FiveM is not installed! Please run server:install');
@@ -50,20 +49,21 @@ class StopCommand extends Command
 
         $serverName = $this->argument('name');
 
-        if (empty($settings['fivem-path'])) {
-            $this->error('FiveM in not installed! Please run fivem:install');
-            exit;
-        }
-
         if (empty($serverName)) {
             $serverName = $this->ask('Which server');
+        }
+
+        $message = $this->argument('message');
+
+        if (empty($message)) {
+            $message = $this->ask('What is your question');
         }
 
         $serverName = str_slug($serverName);
 
         $server = $servers[$serverName];
 
-        if (! isset($server)) {
+        if (empty($server)) {
             $this->error('That server does not exist!');
             exit;
         }
@@ -73,18 +73,18 @@ class StopCommand extends Command
             exit;
         }
 
-        if (! $this->option('no-warning')) {
-            exec("screen -S fivem-$serverName -X stuff 'say The server shutting down!'$(echo -ne '\015')");
-            sleep(3);
-        }
-
-        exec("screen -XS fivem-$serverName quit");
-
-        $server['status'] = false;
-        $servers[$serverName] = $server;
-
-        Storage::put('servers.json', json_encode($servers));
-
-        $this->info("The $serverName server has been stopped.");
+        exec("screen -S fivem-$serverName -X stuff 'say $message'$(echo -ne '\015')");
     }
+
+    /**
+	 * Define the command's schedule.
+	 *
+	 * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+	 *
+	 * @return void
+	 */
+	public function schedule(Schedule $schedule): void
+	{
+		// $schedule->command(static::class)->everyMinute();
+	}
 }

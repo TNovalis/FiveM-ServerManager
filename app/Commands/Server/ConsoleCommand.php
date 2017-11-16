@@ -7,21 +7,21 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
-class ListCommand extends Command
+class ConsoleCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'server:list {--path : Show path in the table}';
+    protected $signature = 'server:console {name? : The name of the server} {--no-warning : Don\'t show the warning}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List the servers and their status';
+    protected $description = 'See the server console';
 
     /**
      * Create a new command instance.
@@ -46,44 +46,49 @@ class ListCommand extends Command
             $this->error('FiveM is not installed! Please run server:install');
             exit;
         }
+
+        $serverName = $this->argument('name');
+
+        if (empty($serverName)) {
+            $serverName = $this->ask('Which server');
+        }
+
+        $serverName = str_slug($serverName);
+
+        if (! isset($servers[$serverName])) {
+            $this->error('That server does not exist!');
+            exit;
+        }
+
+        $server = $servers[$serverName];
+
         $status = [];
         exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
         $status = str_replace('fivem-', '', $status);
 
-        $includePath = $this->option('path');
-
-        $headers = ['Server', 'Status'];
-
-        if ($includePath) {
-            $headers[] = 'Path';
+        if (! $server['status'] && ! in_array($serverName, $status)) {
+            $this->error('That server is not up!');
+            exit;
         }
 
-        $data = [];
-
-        foreach ($servers as $name => $sData) {
-            $data[$name] = [];
-            $data[$name]['Server'] = $name;
-            if ($sData['status'] && !in_array($name, $status)) {
-                $this->warn("$name may have crashed!");
-                if ($this->confirm("Do you want to put it back up?")) {
-                    $this->call('server:start', ['name' => $name, '-q' => true]);
-                }
-            }
-            $sData['status'] = in_array($name, $status);
-            if ($sData['status']) {
-                $data[$name]['Status'] = '<info>UP</info>';
+        if ($server['status'] && ! in_array($serverName, $status)) {
+            $this->warn("$serverName may have crashed!");
+            if ($this->confirm("Do you want to put it back up?")) {
+                $this->call('server:start', ['name' => $serverName, '-q' => true]);
             } else {
-                $data[$name]['Status'] = '<comment>DOWN</comment>';
+                $server['status'] = false;
+                $servers[$serverName] = $server;
+                Storage::put('servers.json', json_encode($servers));
             }
-            if ($includePath) {
-                $data[$name]['Path'] = $sData['path'];
-            }
-            $servers[$name] = $sData;
+            exit;
         }
 
-        Storage::put('servers.json', json_encode($servers));
+        if(!$this->option('no-warning')) {
+            $this->warn('Remember to do [CTRL+A, D] to close the console or you will crash the server!');
+            sleep(2);
+        }
 
-        $this->table($headers, $data);
+        system("screen -r fivem-$serverName");
     }
 
     /**

@@ -54,8 +54,13 @@ class SetPathCommand extends Command
 
         $path = $this->argument('path');
 
-        if (empty($path)) {
+        if (empty($path) && ! isset($settings['server-path'])) {
             $path = $this->ask('Path');
+        }
+
+        if (isset($settings['server-path'])) {
+            $this->info('Current Path: ' . $settings['server-path']);
+            exit;
         }
 
         $this->path = realpath(str_replace('~', $_SERVER['HOME'], $path));

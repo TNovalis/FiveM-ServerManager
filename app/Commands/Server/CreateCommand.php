@@ -101,7 +101,7 @@ class CreateCommand extends Command
 
     protected function downloadFiles()
     {
-        exec("cd $this->path; git clone https://github.com/citizenfx/cfx-server-data.git $this->serverName --depth=1; cd $this->serverName; rm -rf .git");
+        exec("cd $this->path; git clone https://github.com/citizenfx/cfx-server-data.git -q $this->serverName --depth=1; cd $this->serverName; rm -rf .git");
 
         copy(__DIR__.'/'.'../stubs/server.cfg.stub', "$this->path/$this->serverName/server.cfg");
     }
