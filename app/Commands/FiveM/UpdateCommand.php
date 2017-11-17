@@ -72,7 +72,7 @@ class UpdateCommand extends Command
 
         if ($this->version == $this->fxVersionNumber) {
             $this->info('FiveM is already up-to-date!');
-            //exit;
+            exit;
         }
 
         $newestFXLink = $buildsURL.$newestFXVersion.'fx.tar.xz';
