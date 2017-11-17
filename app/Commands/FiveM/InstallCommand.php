@@ -2,10 +2,10 @@
 
 namespace App\Commands\FiveM;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class InstallCommand extends Command
 {
@@ -82,7 +82,7 @@ class InstallCommand extends Command
 
     protected function downloadFiles()
     {
-        $buildsURL = "https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/";
+        $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
 
         $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tail -1 | awk -F[\>\<] '{print $3}'");
 

@@ -2,10 +2,10 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class SetPathCommand extends Command
 {
@@ -59,7 +59,7 @@ class SetPathCommand extends Command
         }
 
         if (isset($settings['server-path'])) {
-            $this->info('Current Path: ' . $settings['server-path']);
+            $this->info('Current Path: '.$settings['server-path']);
             exit;
         }
 

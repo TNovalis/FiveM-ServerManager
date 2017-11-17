@@ -2,10 +2,10 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ListCommand extends Command
 {
@@ -63,9 +63,9 @@ class ListCommand extends Command
         foreach ($servers as $name => $sData) {
             $data[$name] = [];
             $data[$name]['Server'] = $name;
-            if ($sData['status'] && !in_array($name, $status)) {
+            if ($sData['status'] && ! in_array($name, $status)) {
                 $this->warn("$name may have crashed!");
-                if ($this->confirm("Do you want to put it back up?")) {
+                if ($this->confirm('Do you want to put it back up?')) {
                     $this->call('server:start', ['name' => $name, '-q' => true]);
                 }
             }

@@ -6,7 +6,7 @@ return [
     'disks' => [
         'local' => [
             'driver' => 'local',
-            'root' => $_SERVER['HOME'] . '/.fsm',
+            'root' => $_SERVER['HOME'].'/.fsm',
         ],
-    ]
+    ],
 ];

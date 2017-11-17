@@ -2,10 +2,10 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class SayCommand extends Command
 {
@@ -77,14 +77,14 @@ class SayCommand extends Command
     }
 
     /**
-	 * Define the command's schedule.
-	 *
-	 * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-	 *
-	 * @return void
-	 */
-	public function schedule(Schedule $schedule): void
-	{
-		// $schedule->command(static::class)->everyMinute();
-	}
+     * Define the command's schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+     *
+     * @return void
+     */
+    public function schedule(Schedule $schedule): void
+    {
+        // $schedule->command(static::class)->everyMinute();
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ConsoleCommand extends Command
 {
@@ -73,7 +73,7 @@ class ConsoleCommand extends Command
 
         if ($server['status'] && ! in_array($serverName, $status)) {
             $this->warn("$serverName may have crashed!");
-            if ($this->confirm("Do you want to put it back up?")) {
+            if ($this->confirm('Do you want to put it back up?')) {
                 $this->call('server:start', ['name' => $serverName, '-q' => true]);
             } else {
                 $server['status'] = false;
@@ -83,7 +83,7 @@ class ConsoleCommand extends Command
             exit;
         }
 
-        if(!$this->option('no-warning')) {
+        if (! $this->option('no-warning')) {
             $this->warn('Remember to do [CTRL+A, D] to close the console or you will crash the server!');
             sleep(2);
         }
