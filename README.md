@@ -87,3 +87,14 @@ fsm server:start [<NAME>]
 fsm server:stop [<NAME>]
 ```
 
+**To backup a server**
+```
+fsm server:backup [<NAME>]
+```
+This will output where it backed the server up to.
+
+**To delete a server**
+```
+fsm server:delete [<NAME>] --no-backup
+```
+If you specify `--no-backup` the server will not be backed up before removal.

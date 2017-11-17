@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.0.11] - 2017-11-17
+### Added
+- server:backup -- backs up a server
+- server:delete -- deletes server after running a server backup unless you use `--no-backup`
+### Fixed
+- fivem:update -- some dev testing code was left in
+
 ## [0.0.10] - 2017-11-17
 ### Changed
 - almost all commands, cleaning up
