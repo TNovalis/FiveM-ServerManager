@@ -2,11 +2,9 @@
 
 namespace App\Commands\FiveM;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UpdateCommand extends Command
 {
@@ -66,13 +64,13 @@ class UpdateCommand extends Command
 
     protected function downloadFiles()
     {
-        $buildsURL = "https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/";
+        $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
 
         $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tail -1 | awk -F[\>\<] '{print $3}'");
 
         $this->fxVersionNumber = strtok($newestFXVersion, '-');
 
-        if($this->version == $this->fxVersionNumber) {
+        if ($this->version == $this->fxVersionNumber) {
             $this->info('FiveM is already up-to-date!');
             //exit;
         }
