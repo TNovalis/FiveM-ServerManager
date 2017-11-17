@@ -20,7 +20,7 @@ class DeleteCommand extends Command
      *
      * @var string
      */
-    protected $description = 'See the server console';
+    protected $description = 'Delete a server';
 
     /**
      * Create a new command instance.
