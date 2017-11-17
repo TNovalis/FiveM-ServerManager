@@ -59,7 +59,7 @@ class DeleteCommand extends Command
             exit;
         }
 
-        if(!$this->confirm('Are you sure you want to delete this server?')) {
+        if (! $this->confirm('Are you sure you want to delete this server?')) {
             $this->info('Canceling.');
             exit;
         }
