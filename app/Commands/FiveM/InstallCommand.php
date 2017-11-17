@@ -3,7 +3,6 @@
 namespace App\Commands\FiveM;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 

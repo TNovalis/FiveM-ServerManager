@@ -3,7 +3,6 @@
 namespace App\Commands\Install;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
 class CreateFilesCommand extends Command
