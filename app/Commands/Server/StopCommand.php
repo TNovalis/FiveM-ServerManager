@@ -73,7 +73,8 @@ class StopCommand extends Command
         }
 
         if (! $this->option('no-warning')) {
-            exec("screen -S fivem-$serverName -X stuff 'say The server shutting down!'$(echo -ne '\015')");
+            $this->warn('Sending server shutdown message...');
+            $this->call('server:say', ['name' => $serverName, 'message' => 'The server is shutting down!', '-q' => true]);
             sleep(3);
         }
 

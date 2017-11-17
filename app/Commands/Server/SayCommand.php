@@ -59,6 +59,8 @@ class SayCommand extends Command
             $message = $this->ask('What is your question');
         }
 
+        $message = addslashes($message);
+
         $serverName = str_slug($serverName);
 
         $server = $servers[$serverName];
@@ -73,18 +75,6 @@ class SayCommand extends Command
             exit;
         }
 
-        exec("screen -S fivem-$serverName -X stuff 'say $message'$(echo -ne '\015')");
-    }
-
-    /**
-     * Define the command's schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-     *
-     * @return void
-     */
-    public function schedule(Schedule $schedule): void
-    {
-        // $schedule->command(static::class)->everyMinute();
+        exec("screen -S fivem-$serverName -X stuff 'say $message^M'");
     }
 }

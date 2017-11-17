@@ -112,16 +112,4 @@ class InstallCommand extends Command
     {
         exec("cd $this->path; chmod -R 771 ./");
     }
-
-    /**
-     * Define the command's schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-     *
-     * @return void
-     */
-    public function schedule(Schedule $schedule): void
-    {
-        // $schedule->command(static::class)->everyMinute();
-    }
 }
