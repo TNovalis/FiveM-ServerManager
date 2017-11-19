@@ -75,7 +75,7 @@ This will display a servers status and also check if a server crashed. You can a
 ```
 fsm server:say [<NAME>] [<MESSAGE>]
 ```
-The message must be in quotes **unless** you include omit it in the initial command.
+The message must be in quotes **unless** you omit it in the initial command.
 
 **To start a server**
 ```
