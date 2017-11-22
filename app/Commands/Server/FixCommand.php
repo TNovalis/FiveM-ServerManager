@@ -2,8 +2,8 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
@@ -41,12 +41,12 @@ class FixCommand extends Command
         foreach ($servers as $name => $server) {
             if ($server['status'] && ! in_array($name, $status)) {
                 $serverStarted = true;
-                $this->info($name . ' was down, restarting.');
+                $this->info($name.' was down, restarting.');
                 $this->call('server:start', ['name' => $name, '-q' => true]);
             }
         }
 
-        if(!$serverStarted) {
+        if (! $serverStarted) {
             $this->info('No servers were down!');
         }
     }
