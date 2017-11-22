@@ -23,16 +23,6 @@ class ConsoleCommand extends Command
     protected $description = 'See the server console';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed

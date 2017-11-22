@@ -2,6 +2,14 @@
 
 A better FiveM Server Manager
 
+#### When will this be out of alpha?
+
+I don't know. It's usable, at least, I use it for my servers.
+
+#### Any upcoming features?
+
+Automatic server restarts, probably.
+
 #### How do I install this?
 
 There are two ways to install FSM.
@@ -52,6 +60,15 @@ fsm server:path [<PATH>]
 ```
 This will set the server path, making it easier to create servers.
 
+If you want features such as the server automatically restarting after crashing, you need to use `fsm schedue:run`
+This is easy to setup.
+
+All you need to do is put the following into your cron:
+```
+* * * * * php /path/to/fsm schedule:run >> /dev/null 2>&1
+```
+No support will be given on how to access your cron file.
+
 #### What about the other commands?
 
 **To update FiveM**
@@ -98,3 +115,9 @@ This will output where it backed the server up to.
 fsm server:delete [<NAME>] --no-backup
 ```
 If you specify `--no-backup` the server will not be backed up before removal.
+
+**To fix a crashed server**
+```
+fsm server:fix
+```
+This command is **scheduled** meaning you can run it if you want but it will be ran by `fsm schedule:run`

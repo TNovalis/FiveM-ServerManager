@@ -23,16 +23,6 @@ class SayCommand extends Command
     protected $description = 'Send a message to the server';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed

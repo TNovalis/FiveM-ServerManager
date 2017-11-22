@@ -2,6 +2,7 @@
 
 namespace App\Commands\Server;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -23,16 +24,6 @@ class ListCommand extends Command
     protected $description = 'List the servers and their status';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -45,9 +36,8 @@ class ListCommand extends Command
             $this->error('FiveM is not installed! Please run server:install');
             exit;
         }
-        $status = [];
-        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
-        $status = str_replace('fivem-', '', $status);
+
+        $status = $this->serverStatus();
 
         $includePath = $this->option('path');
 
@@ -83,5 +73,13 @@ class ListCommand extends Command
         Storage::put('servers.json', json_encode($servers));
 
         $this->table($headers, $data);
+    }
+
+    protected function serverStatus()
+    {
+        $status = [];
+        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
+
+        return str_replace('fivem-', '', $status);
     }
 }
