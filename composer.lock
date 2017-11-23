@@ -75,16 +75,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.1.12",
+            "version": "2.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "a99f0b151846021ba7a73b4e3cba3ebc9f14f03e"
+                "reference": "9f640a4f129e57d3537887f840380109a4dd182b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/a99f0b151846021ba7a73b4e3cba3ebc9f14f03e",
-                "reference": "a99f0b151846021ba7a73b4e3cba3ebc9f14f03e",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/9f640a4f129e57d3537887f840380109a4dd182b",
+                "reference": "9f640a4f129e57d3537887f840380109a4dd182b",
                 "shasum": ""
             },
             "require": {
@@ -93,7 +93,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "^4.8 || ^5.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.7",
                 "symfony/var-dumper": "^2.6 || ^3.0"
             },
             "suggest": {
@@ -132,7 +132,7 @@
                 "throwable",
                 "whoops"
             ],
-            "time": "2017-10-15T13:05:10+00:00"
+            "time": "2017-11-17T08:15:51+00:00"
         },
         {
             "name": "illuminate/cache",
@@ -572,16 +572,16 @@
         },
         {
             "name": "laravel-zero/framework",
-            "version": "v4.0.7",
+            "version": "v4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-zero/framework.git",
-                "reference": "f2c6401ceb8c60919e991733f8b0eda25c0285af"
+                "reference": "653984ba2cc1500c01a8c635efb3c89e29dc9369"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/f2c6401ceb8c60919e991733f8b0eda25c0285af",
-                "reference": "f2c6401ceb8c60919e991733f8b0eda25c0285af",
+                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/653984ba2cc1500c01a8c635efb3c89e29dc9369",
+                "reference": "653984ba2cc1500c01a8c635efb3c89e29dc9369",
                 "shasum": ""
             },
             "require": {
@@ -630,7 +630,7 @@
                 "laravel",
                 "zero"
             ],
-            "time": "2017-11-15T00:10:06+00:00"
+            "time": "2017-11-22T21:15:42+00:00"
         },
         {
             "name": "league/flysystem",
@@ -814,16 +814,16 @@
         },
         {
             "name": "nunomaduro/collision",
-            "version": "v1.1.8",
+            "version": "v1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/collision.git",
-                "reference": "4958cf29a6fb342101ecf64965a45598f0444f1e"
+                "reference": "276db430a4b1c12caf8d0a47cac73cf2aa4bffe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/4958cf29a6fb342101ecf64965a45598f0444f1e",
-                "reference": "4958cf29a6fb342101ecf64965a45598f0444f1e",
+                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/276db430a4b1c12caf8d0a47cac73cf2aa4bffe4",
+                "reference": "276db430a4b1c12caf8d0a47cac73cf2aa4bffe4",
                 "shasum": ""
             },
             "require": {
@@ -867,7 +867,7 @@
                 "php",
                 "symfony"
             ],
-            "time": "2017-11-05T21:32:49+00:00"
+            "time": "2017-11-15T21:15:11+00:00"
         },
         {
             "name": "nunomaduro/laravel-desktop-notifier",
@@ -1080,16 +1080,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v3.3.12",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "099302cc53e57cbb7414fd9f3ace40e5e2767c0b"
+                "reference": "63cd7960a0a522c3537f6326706d7f3b8de65805"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/099302cc53e57cbb7414fd9f3ace40e5e2767c0b",
-                "reference": "099302cc53e57cbb7414fd9f3ace40e5e2767c0b",
+                "url": "https://api.github.com/repos/symfony/console/zipball/63cd7960a0a522c3537f6326706d7f3b8de65805",
+                "reference": "63cd7960a0a522c3537f6326706d7f3b8de65805",
                 "shasum": ""
             },
             "require": {
@@ -1144,11 +1144,11 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-12T16:53:41+00:00"
+            "time": "2017-11-16T15:24:32+00:00"
         },
         {
             "name": "symfony/debug",
-            "version": "v3.3.12",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
@@ -1204,7 +1204,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v3.3.12",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -1312,7 +1312,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v3.3.12",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -1361,7 +1361,7 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v3.3.12",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
