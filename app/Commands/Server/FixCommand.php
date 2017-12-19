@@ -2,12 +2,10 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
+use App\Commands\BaseCommand;
 use Illuminate\Console\Scheduling\Schedule;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-class FixCommand extends Command
+class FixCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -30,18 +28,14 @@ class FixCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            exit;
-        }
+        list($servers) = $this->getConfig();
 
-        $status = $this->serverStatus();
+        $status = $this->getServerStatus();
         $serverStarted = false;
         foreach ($servers as $name => $server) {
-            if ($server['status'] && ! in_array($name, $status)) {
+            if ($server['status'] && ! $status[$name]) {
                 $serverStarted = true;
-                $this->info($name.' was down, restarting.');
+                $this->warn($name.' was down, restarting.');
                 $this->call('server:start', ['name' => $name, '-q' => true]);
             }
         }
@@ -54,13 +48,5 @@ class FixCommand extends Command
     public function schedule(Schedule $schedule): void
     {
         $schedule->command(static::class)->everyMinute();
-    }
-
-    protected function serverStatus()
-    {
-        $status = [];
-        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
-
-        return str_replace('fivem-', '', $status);
     }
 }

@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class SetPathCommand extends Command
+class SetPathCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -44,12 +42,7 @@ class SetPathCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        list($servers, $settings) = $this->getConfig();
 
         $path = $this->argument('path');
 
@@ -68,7 +61,7 @@ class SetPathCommand extends Command
 
         $settings['server-path'] = $this->path;
 
-        Storage::put('settings.json', json_encode($settings));
+        $this->saveSettings($settings);
 
         $this->info('Global server path set!');
     }

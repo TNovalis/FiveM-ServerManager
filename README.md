@@ -116,7 +116,12 @@ fsm server:delete [<NAME>] --no-backup
 ```
 If you specify `--no-backup` the server will not be backed up before removal.
 
-**To fix a crashed server**
+**To rename a server**
+```
+fsm server:rename [<NAME>] [<NEW-NAME>]
+```
+
+**To fix a crashed server** - *scheduled*
 ```
 fsm server:fix
 ```

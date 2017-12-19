@@ -4,21 +4,21 @@ namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
 
-class DeleteCommand extends BaseCommand
+class RenameCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'server:delete {name? : The name of the server} {--no-backup : Don\'t backup the server}';
+    protected $signature = 'server:rename {name? : The name of the server} {new-name? : The new name of the server}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Delete a server';
+    protected $description = 'Rename a server';
 
     /**
      * Execute the console command.
@@ -31,26 +31,38 @@ class DeleteCommand extends BaseCommand
 
         list($server, $serverName) = $this->getServer();
 
-        if (! $this->confirm('Are you sure you want to delete this server?')) {
+        $newName = $this->argument('new-name');
+
+        if (empty($newName)) {
+            $newName = $this->ask('New server name');
+        }
+
+        $newName = str_slug($newName);
+
+        if (! empty($servers[$newName])) {
+            $this->warn('A server already exists with that name!');
+            exit;
+        }
+
+        if (! $this->confirm('Are you sure you want to rename this server?')) {
             $this->info('Canceling.');
             exit;
         }
 
         $path = $server['path'];
+        $newPath = $server['path']."/../$newName";
+        $server['path'] = $newPath;
 
         if (! empty($this->getServerStatus()[$serverName])) {
             $this->warn('Server is being shutdown!');
             exec("screen -XS fivem-$serverName quit");
         }
 
-        if (! $this->option('no-backup')) {
-            $this->call('server:backup', ['name' => $serverName]);
-        }
+        exec("mv $path $newPath");
 
-        exec("rm -rf $path");
+        $this->info("$serverName server renamed to $newName!");
 
-        $this->info("$serverName server deleted!");
-
+        $servers[$newName] = $server;
         unset($servers[$serverName]);
 
         $this->saveServers($servers);

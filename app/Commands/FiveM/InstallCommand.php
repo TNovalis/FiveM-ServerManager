@@ -2,11 +2,11 @@
 
 namespace App\Commands\FiveM;
 
+use App\Commands\BaseCommand;
 use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-class InstallCommand extends Command
+class InstallCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.

@@ -2,11 +2,10 @@
 
 namespace App\Commands\Server;
 
+use App\Commands\BaseCommand;
 use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-class StartCommand extends Command
+class StartCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,43 +28,24 @@ class StartCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        list($servers, $settings) = $this->getConfig();
 
-        $serverName = $this->argument('name');
-
-        if (empty($settings['fivem-path'])) {
-            $this->error('FiveM in not installed! Please run fivem:install');
-            exit;
-        }
-
-        if (empty($serverName)) {
-            $serverName = $this->ask('Which server');
-        }
-
-        $serverName = str_slug($serverName);
-
-        $server = $servers[$serverName];
-
-        if (empty($server)) {
-            $this->error('That server does not exist!');
-            exit;
-        }
+        list($server, $serverName) = $this->getServer();
 
         $fivemPath = $settings['fivem-path'];
         $serverPath = $server['path'];
+
+        if(!empty($this->getServerStatus()[$serverName])) {
+            $this->warn('That server is already up!');
+            exit;
+        }
 
         exec("cd $serverPath; screen -dmS fivem-$serverName $fivemPath/run.sh +exec $serverPath/server.cfg");
 
         $server['status'] = true;
         $servers[$serverName] = $server;
 
-        Storage::put('servers.json', json_encode($servers));
+        $this->saveServers($servers);
 
         $this->info("The $serverName server has been started.");
     }

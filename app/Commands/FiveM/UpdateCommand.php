@@ -2,11 +2,10 @@
 
 namespace App\Commands\FiveM;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\BaseCommand;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-class UpdateCommand extends Command
+class UpdateCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -35,12 +34,7 @@ class UpdateCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        list($servers, $settings) = $this->getConfig();
 
         $this->path = $settings['fivem-path'];
         $this->version = $settings['fivem-version'];
@@ -57,7 +51,7 @@ class UpdateCommand extends Command
         $this->setPermissions();
 
         $settings['fivem-version'] = $this->fxVersionNumber;
-        Storage::put('settings.json', json_encode($settings));
+        $this->saveServers($servers);
 
         $this->info('FiveM has been updated!');
     }

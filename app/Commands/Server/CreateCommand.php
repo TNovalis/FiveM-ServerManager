@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class CreateCommand extends Command
+class CreateCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -35,13 +33,7 @@ class CreateCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-            $this->servers = $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        list($servers, $settings) = $this->getConfig();
 
         $name = $this->argument('name');
         $path = $this->argument('path');
@@ -69,7 +61,7 @@ class CreateCommand extends Command
 
         $servers[$this->serverName] = ['path' => "$this->path/$this->serverName", 'status' => false];
 
-        Storage::put('servers.json', json_encode($servers));
+        $this->saveServers($servers);
 
         $this->info('Server created.');
 
@@ -79,12 +71,12 @@ class CreateCommand extends Command
     protected function checkDirectory()
     {
         if (! is_dir($this->path)) {
-            $this->error('The server root directory does not exist!');
+            $this->warn('The server root directory does not exist!');
             exit;
         }
 
         if (isset($this->servers[$this->serverName])) {
-            $this->error('That server already exists!');
+            $this->warn('That server already exists!');
             exit;
         }
 
@@ -93,7 +85,7 @@ class CreateCommand extends Command
         }
 
         if (! (count(scandir(realpath($this->path.'/'.$this->serverName))) == 2)) {
-            $this->error('That directory is not empty!');
+            $this->warn('That directory is not empty!');
             exit;
         }
     }

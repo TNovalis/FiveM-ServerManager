@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class ListCommand extends Command
+class ListCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,14 +27,7 @@ class ListCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
-
-        $status = $this->serverStatus();
+        list($servers) = $this->getConfig();
 
         $includePath = $this->option('path');
 
@@ -47,17 +38,15 @@ class ListCommand extends Command
         }
 
         $data = [];
+        $status = $this->getServerStatus();
 
         foreach ($servers as $name => $sData) {
             $data[$name] = [];
             $data[$name]['Server'] = $name;
-            if ($sData['status'] && ! in_array($name, $status)) {
-                $this->warn("$name may have crashed!");
-                if ($this->confirm('Do you want to put it back up?')) {
-                    $this->call('server:start', ['name' => $name, '-q' => true]);
-                }
+            if ($sData['status'] && ! $status[$name]) {
+                $this->promptServerCrashed($name);
             }
-            $sData['status'] = in_array($name, $status);
+            $sData['status'] = $this->getServerStatus()[$name];
             if ($sData['status']) {
                 $data[$name]['Status'] = '<info>UP</info>';
             } else {
@@ -69,16 +58,6 @@ class ListCommand extends Command
             $servers[$name] = $sData;
         }
 
-        Storage::put('servers.json', json_encode($servers));
-
         $this->table($headers, $data);
-    }
-
-    protected function serverStatus()
-    {
-        $status = [];
-        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
-
-        return str_replace('fivem-', '', $status);
     }
 }

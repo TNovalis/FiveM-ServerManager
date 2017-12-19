@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class BackupCommand extends Command
+class BackupCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,31 +27,16 @@ class BackupCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
-
-        $serverName = $this->argument('name');
-
-        if (empty($serverName)) {
-            $serverName = $this->ask('Which server');
-        }
-
-        $serverName = str_slug($serverName);
-
-        $server = $servers[$serverName];
+        list($server, $serverName) = $this->getServer();
 
         if (! is_dir($server['path'].'/../Backups')) {
             mkdir($server['path'].'/../Backups');
         }
 
-        $date = date('Y-m-d-H:i');
+        $date = date('Y-m-d-H_i');
         $serverPath = $server['path'];
         $backupPath = realpath($server['path'].'/../Backups');
-        exec("tar -czf $backupPath/$serverName-$date.tar.gz $serverPath 2> /dev/null");
+        exec("cd $serverPath/../; tar -czf $backupPath/$serverName-$date.tar.gz $serverName 2> /dev/null");
 
         $this->info("Backup created: $backupPath/$serverName-$date.tar.gz");
     }

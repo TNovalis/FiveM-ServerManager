@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class ConsoleCommand extends Command
+class ConsoleCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,46 +27,17 @@ class ConsoleCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
+        list($server, $serverName) = $this->getServer();
+
+        $status = $this->getServerStatus();
+
+        if (empty($this->getServerStatus()[$serverName])) {
+            $this->warn('That server is not up!');
             exit;
         }
 
-        $serverName = $this->argument('name');
-
-        if (empty($serverName)) {
-            $serverName = $this->ask('Which server');
-        }
-
-        $serverName = str_slug($serverName);
-
-        if (! isset($servers[$serverName])) {
-            $this->error('That server does not exist!');
-            exit;
-        }
-
-        $server = $servers[$serverName];
-
-        $status = [];
-        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
-        $status = str_replace('fivem-', '', $status);
-
-        if (! $server['status'] && ! in_array($serverName, $status)) {
-            $this->error('That server is not up!');
-            exit;
-        }
-
-        if ($server['status'] && ! in_array($serverName, $status)) {
-            $this->warn("$serverName may have crashed!");
-            if ($this->confirm('Do you want to put it back up?')) {
-                $this->call('server:start', ['name' => $serverName, '-q' => true]);
-            } else {
-                $server['status'] = false;
-                $servers[$serverName] = $server;
-                Storage::put('servers.json', json_encode($servers));
-            }
+        if ($server['status'] && ! $status[$serverName]) {
+            $this->promptServerCrashed($serverName);
             exit;
         }
 

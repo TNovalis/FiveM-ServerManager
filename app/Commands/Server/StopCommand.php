@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class StopCommand extends Command
+class StopCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,36 +27,12 @@ class StopCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        list($servers) = $this->getConfig();
 
-        $serverName = $this->argument('name');
+        list($server, $serverName) = $this->getServer();
 
-        if (empty($settings['fivem-path'])) {
-            $this->error('FiveM in not installed! Please run fivem:install');
-            exit;
-        }
-
-        if (empty($serverName)) {
-            $serverName = $this->ask('Which server');
-        }
-
-        $serverName = str_slug($serverName);
-
-        $server = $servers[$serverName];
-
-        if (! isset($server)) {
-            $this->error('That server does not exist!');
-            exit;
-        }
-
-        if (! $server['status']) {
-            $this->error('That server is not up!');
+        if(empty($this->getServerStatus()[$serverName])) {
+            $this->warn('That server is not up!');
             exit;
         }
 
@@ -73,8 +47,8 @@ class StopCommand extends Command
         $server['status'] = false;
         $servers[$serverName] = $server;
 
-        Storage::put('servers.json', json_encode($servers));
+        $this->saveServers($servers);
 
-        $this->info("The $serverName server has been stopped.");
+        $this->info("The '$serverName' server has been stopped.");
     }
 }

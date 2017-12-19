@@ -2,11 +2,9 @@
 
 namespace App\Commands\Server;
 
-use Illuminate\Support\Facades\Storage;
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 
-class SayCommand extends Command
+class SayCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,37 +27,17 @@ class SayCommand extends Command
      */
     public function handle(): void
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
-
-        $serverName = $this->argument('name');
-
-        if (empty($serverName)) {
-            $serverName = $this->ask('Which server');
-        }
+        list($server, $serverName) = $this->getServer();
 
         $message = $this->argument('message');
 
         if (empty($message)) {
-            $message = $this->ask('What is your question');
+            $message = $this->ask('What is your message');
         }
 
         $message = addslashes($message);
 
-        $serverName = str_slug($serverName);
-
-        $server = $servers[$serverName];
-
-        if (empty($server)) {
-            $this->error('That server does not exist!');
-            exit;
-        }
-
-        if (! $server['status']) {
+        if (! $this->getServerStatus()[$serverName]) {
             $this->error('That server is not up!');
             exit;
         }
