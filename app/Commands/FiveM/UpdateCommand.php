@@ -3,7 +3,6 @@
 namespace App\Commands\FiveM;
 
 use App\Commands\BaseCommand;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UpdateCommand extends BaseCommand
 {

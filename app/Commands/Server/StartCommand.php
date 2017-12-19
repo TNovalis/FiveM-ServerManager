@@ -3,7 +3,6 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
-use Illuminate\Support\Facades\Storage;
 
 class StartCommand extends BaseCommand
 {
@@ -35,7 +34,7 @@ class StartCommand extends BaseCommand
         $fivemPath = $settings['fivem-path'];
         $serverPath = $server['path'];
 
-        if(!empty($this->getServerStatus()[$serverName])) {
+        if (! empty($this->getServerStatus()[$serverName])) {
             $this->warn('That server is already up!');
             exit;
         }
