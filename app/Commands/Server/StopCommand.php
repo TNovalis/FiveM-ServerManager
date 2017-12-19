@@ -31,7 +31,7 @@ class StopCommand extends BaseCommand
 
         list($server, $serverName) = $this->getServer();
 
-        if(empty($this->getServerStatus()[$serverName])) {
+        if (empty($this->getServerStatus()[$serverName])) {
             $this->warn('That server is not up!');
             exit;
         }

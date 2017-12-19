@@ -2,9 +2,9 @@
 
 namespace App\Commands;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 abstract class BaseCommand extends Command
 {
