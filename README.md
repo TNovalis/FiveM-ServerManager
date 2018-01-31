@@ -1,4 +1,5 @@
 # FiveM-ServerManager
+[![Packagist](https://img.shields.io/packagist/v/TNovalis/FiveM-ServerManager.svg)](https://packagist.org/packages/TNovalis/FiveM-ServerManager) [![Join our Discord](https://discordapp.com/api/guilds/408394806545481767/embed.png)](https://discord.gg/HQ96qsJ) 
 
 A better FiveM Server Manager
 
@@ -135,3 +136,8 @@ fsm server:rename [<NAME>] [<NEW-NAME>]
 fsm server:fix
 ```
 This command is **scheduled** meaning you can run it if you want but it will be ran by `fsm schedule:run`
+
+#### Can I donate? Also why is this at the bottom?
+You can donate [here](https://www.patreon.com/tnovalis).
+
+I put this at the bottom because the package is more important than pushing my Patreon.
