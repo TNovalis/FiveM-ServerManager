@@ -25,6 +25,7 @@ Also make sure it is marked executable `chmod +x fsm`
 ###### Requirements
 - PHP 7.1
 - Linux
+- Screen
 
 ##### Option Two
 
@@ -44,6 +45,7 @@ If you use Bash for your shell you need to edit `.profile` to add it to your `$P
 ###### Requirements
 - PHP 7.1
 - Linux
+- Screen
 - The few of composers requirements
 
 #### How do I use this?
