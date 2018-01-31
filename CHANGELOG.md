@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [0.0.15]
+## [0.0.16] - 2018-01-31
+### Added
+- fivem:license -- save license for starting server
+### Changed
+- server:start -- now will automatically include license key, if set
+### Fixed
+- server:path -- Wouldn't let you set a new path
+- server:create -- Didn't check if server existed, properly
+- Some typos
+
+## [0.0.15] - 2017-12-19
 ### Added
 - server:rename -- renames a server
 - BaseCommand -- cleaner code

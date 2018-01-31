@@ -11,7 +11,7 @@ class SetPathCommand extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'server:path {path?}';
+    protected $signature = 'server:path {path?} {--s|set}';
 
     /**
      * The console command description.
@@ -32,7 +32,7 @@ class SetPathCommand extends BaseCommand
         parent::__construct();
 
         $this->addUsage('~/fivem/servers');
-        $this->addUsage('~/servers/fivem');
+        $this->addUsage('--set');
     }
 
     /**
@@ -45,12 +45,13 @@ class SetPathCommand extends BaseCommand
         list($servers, $settings) = $this->getConfig();
 
         $path = $this->argument('path');
+        $set = $this->option('set');
 
-        if (empty($path) && ! isset($settings['server-path'])) {
+        if ((empty($path) && $set) || (empty($path) && (! isset($settings['server-path'])))) {
             $path = $this->ask('Path');
         }
 
-        if (isset($settings['server-path'])) {
+        if (empty($path) && isset($settings['server-path'])) {
             $this->info('Current Path: '.$settings['server-path']);
             exit;
         }

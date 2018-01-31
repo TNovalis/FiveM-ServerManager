@@ -56,6 +56,13 @@ fsm fivem:install [<PATH>]
 ```
 This will install FiveM and save the path for when starting the server.
 
+Since FiveM requires a license key, you must get one [here](https://keymaster.fivem.net)
+FSM allows you to easily set it. 
+```
+fsm fivem:license [<LICENSE>]
+```
+No need to edit any config files if you need to change it later, FSM will take care of it for you.
+
 After that I recommend running this:
 ```
 fsm server:path [<PATH>]

@@ -3,6 +3,7 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
+use Illuminate\Support\Facades\Storage;
 
 class CreateCommand extends BaseCommand
 {
@@ -34,6 +35,9 @@ class CreateCommand extends BaseCommand
     public function handle(): void
     {
         list($servers, $settings) = $this->getConfig();
+
+        $this->servers = $servers;
+        $this->settings = $settings;
 
         $name = $this->argument('name');
         $path = $this->argument('path');

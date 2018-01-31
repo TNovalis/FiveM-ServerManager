@@ -39,7 +39,13 @@ class StartCommand extends BaseCommand
             exit;
         }
 
-        exec("cd $serverPath; screen -dmS fivem-$serverName $fivemPath/run.sh +exec $serverPath/server.cfg");
+        $key = "";
+
+        if (isset($settings['license'])) {
+            $key = "+set sv_licenseKey \"".$settings['license']."\"";
+        }
+
+        exec("cd $serverPath; screen -dmS fivem-$serverName $fivemPath/run.sh +exec $serverPath/server.cfg $key");
 
         $server['status'] = true;
         $servers[$serverName] = $server;
