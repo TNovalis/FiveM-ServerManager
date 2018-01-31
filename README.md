@@ -60,7 +60,7 @@ fsm server:path [<PATH>]
 ```
 This will set the server path, making it easier to create servers.
 
-If you want features such as the server automatically restarting after crashing, you need to use `fsm schedue:run`
+If you want features such as the server automatically restarting after crashing, you need to use `fsm schedule:run`
 This is easy to setup.
 
 All you need to do is put the following into your cron:
