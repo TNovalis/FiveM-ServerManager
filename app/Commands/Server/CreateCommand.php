@@ -3,7 +3,6 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
-use Illuminate\Support\Facades\Storage;
 
 class CreateCommand extends BaseCommand
 {
