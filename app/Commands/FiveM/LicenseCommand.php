@@ -4,7 +4,6 @@ namespace App\Commands\FiveM;
 
 use App\Commands\BaseCommand;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class LicenseCommand extends BaseCommand
 {
