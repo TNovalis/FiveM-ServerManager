@@ -41,7 +41,7 @@ class CreateCommand extends BaseCommand
         $name = $this->argument('name');
         $path = $this->argument('path');
 
-        if (! empty($settings['server-path'])) {
+        if (! empty($settings['server-path']) && empty($path)) {
             $path = $settings['server-path'];
         }
 
