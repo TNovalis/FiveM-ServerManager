@@ -14,7 +14,7 @@ abstract class BaseCommand extends Command
             $servers = json_decode(Storage::get('servers.json'), true);
             $settings = json_decode(Storage::get('settings.json'), true);
         } catch (FileNotFoundException $e) {
-            $this->error('FiveM is not installed! Please run server:install');
+            $this->error('FiveM is not installed! Please run fivem:install');
             exit;
         }
 

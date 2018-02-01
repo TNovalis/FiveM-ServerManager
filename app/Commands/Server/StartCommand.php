@@ -52,6 +52,6 @@ class StartCommand extends BaseCommand
 
         $this->saveServers($servers);
 
-        $this->info("The $serverName server has been started.");
+        $this->info("The '$serverName' server has been started.");
     }
 }

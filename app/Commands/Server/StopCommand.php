@@ -11,7 +11,7 @@ class StopCommand extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'server:stop {name? : The server name} {--no-warning : Don\'t send the warning}';
+    protected $signature = 'server:stop {name? : The server name} {--nw|no-warning : Don\'t show a warning}';
 
     /**
      * The console command description.
