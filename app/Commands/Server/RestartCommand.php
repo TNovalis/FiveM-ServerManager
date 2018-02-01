@@ -18,7 +18,7 @@ class RestartCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Send a message to the server';
+    protected $description = 'Restart a server';
 
     /**
      * Execute the console command.
