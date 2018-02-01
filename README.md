@@ -28,6 +28,8 @@ Also make sure it is marked executable `chmod +x fsm`
 - Linux
 - Screen
 
+Ubuntu 16+ users: `sudo apt install php php-mbstring screen`
+
 ##### Option Two
 
 You must have `composer` installed *and its own requirements*
@@ -49,6 +51,8 @@ If you use Bash for your shell you need to edit `.profile` to add it to your `$P
 - Linux
 - Screen
 - The few of composers requirements
+
+Ubuntu 16+ users: `sudo apt install php php-mbstring php-zip composer screen`
 
 #### How do I use this?
 
