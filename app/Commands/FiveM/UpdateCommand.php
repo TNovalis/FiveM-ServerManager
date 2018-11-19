@@ -58,18 +58,19 @@ class UpdateCommand extends BaseCommand
     protected function downloadFiles()
     {
         $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
-
-        $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tail -1 | awk -F[\>\<] '{print $3}'");
-
-        $this->fxVersionNumber = strtok($newestFXVersion, '-');
-
-        if ($this->version == $this->fxVersionNumber) {
-            $this->info('FiveM is already up-to-date!');
-            exit;
+        $newestFXVersion = '';
+        $tail = 1;
+        while (!is_numeric(substr($newestFXVersion, 0, 3))) {
+            $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tac | sed '" . $tail . "q;d' | awk -F[\>\<] '{print $3}'");
+            $tail++;
         }
 
-        $newestFXLink = $buildsURL.$newestFXVersion.'fx.tar.xz';
+        $this->fxVersionNumber = strtok($newestFXVersion, '-');
+        $this->info($this->fxVersionNumber);
 
+        $newestFXLink = $buildsURL . $newestFXVersion . 'fx.tar.xz';
+
+        $this->info('Downloading and extracting files...');
         exec("cd $this->path; curl -sO $newestFXLink; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
     }
 
@@ -77,7 +78,6 @@ class UpdateCommand extends BaseCommand
     {
         $files = [
             'run.sh',
-            'proot',
         ];
 
         foreach ($files as $file) {

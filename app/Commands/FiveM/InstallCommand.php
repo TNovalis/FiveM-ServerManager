@@ -65,12 +65,12 @@ class InstallCommand extends BaseCommand
 
     protected function checkDirectory()
     {
-        if (! is_dir($this->path)) {
+        if (!is_dir($this->path)) {
             $this->error('That directory does not exist!');
             exit;
         }
 
-        if (! (count(scandir(realpath($this->path))) == 2)) {
+        if (!(count(scandir(realpath($this->path))) == 2)) {
             $confirm = $this->confirm('That directory is not empty, are you sure?');
         }
 
@@ -82,25 +82,30 @@ class InstallCommand extends BaseCommand
     protected function downloadFiles()
     {
         $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
-
-        $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tail -1 | awk -F[\>\<] '{print $3}'");
+        $newestFXVersion = '';
+        $tail = 1;
+        while (!is_numeric(substr($newestFXVersion, 0, 3))) {
+            $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tac | sed '" . $tail . "q;d' | awk -F[\>\<] '{print $3}'");
+            $tail++;
+        }
 
         $this->fxVersionNumber = strtok($newestFXVersion, '-');
+        $this->info($this->fxVersionNumber);
 
-        $newestFXLink = $buildsURL.$newestFXVersion.'fx.tar.xz';
+        $newestFXLink = $buildsURL . $newestFXVersion . 'fx.tar.xz';
 
+        $this->info('Downloading and extracting files...');
         exec("cd $this->path; curl -sO $newestFXLink; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
     }
 
     protected function checkFiles()
     {
         $files = [
-            'run.sh',
-            'proot',
+            'run.sh'
         ];
 
         foreach ($files as $file) {
-            if (! file_exists("$this->path/$file")) {
+            if (!file_exists("$this->path/$file")) {
                 $this->error('An error occurred, try again later.');
                 exit;
             }
