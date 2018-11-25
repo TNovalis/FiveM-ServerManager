@@ -18,7 +18,7 @@ class UpdateCommand extends BaseCommand
     protected $fxVersionNumber;
 
     /**
-     * Update the FiveM server files
+     * Update the FiveM server files.
      *
      * @return mixed
      */
@@ -45,7 +45,7 @@ class UpdateCommand extends BaseCommand
         $newestBuild = collect($crawler->filter('a')->each(function ($n) use ($buildsURL) {
             $link = $n->attr('href');
             if (! is_numeric(substr($link, 0, 3))) {
-                return null;
+                return;
             }
             $version = explode('-', trim($link, '/'))[0];
 

@@ -2,11 +2,11 @@
 
 namespace App\Commands\FSM;
 
-use App\Commands\BaseCommand;
 use App\Server;
 use App\Setting;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Commands\BaseCommand;
 use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class MigrateCommand extends BaseCommand
 {

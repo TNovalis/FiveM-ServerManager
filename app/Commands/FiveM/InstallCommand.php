@@ -3,8 +3,8 @@
 namespace App\Commands\FiveM;
 
 use App\Commands\BaseCommand;
-use Illuminate\Support\Facades\File;
 use Weidner\Goutte\GoutteFacade;
+use Illuminate\Support\Facades\File;
 
 class InstallCommand extends BaseCommand
 {
@@ -17,7 +17,7 @@ class InstallCommand extends BaseCommand
     protected $fxVersionNumber;
 
     /**
-     * Install the FiveM server files
+     * Install the FiveM server files.
      */
     public function handle()
     {
@@ -64,7 +64,7 @@ class InstallCommand extends BaseCommand
         $newestBuild = collect($crawler->filter('a')->each(function ($n) use ($buildsURL) {
             $link = $n->attr('href');
             if (! is_numeric(substr($link, 0, 3))) {
-                return null;
+                return;
             }
             $version = explode('-', trim($link, '/'))[0];
 
