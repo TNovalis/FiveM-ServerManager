@@ -2,11 +2,10 @@
 
 namespace App\Commands\Server;
 
-use App\Commands\BaseCommand;
 use App\Server;
-use Illuminate\Console\Scheduling\Schedule;
+use App\Commands\BaseCommand;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\File;
+use Illuminate\Console\Scheduling\Schedule;
 
 class RestartCommand extends BaseCommand
 {
@@ -15,7 +14,7 @@ class RestartCommand extends BaseCommand
     protected $description = 'Restart a server';
 
     /**
-     * Restart the server
+     * Restart the server.
      */
     public function handle()
     {
@@ -51,7 +50,8 @@ class RestartCommand extends BaseCommand
             $restart = Carbon::now()->setTime($restartsTime[0], $restartsTime[1]);
             if ($restart->between($timeBefore, $timeAfter)) {
                 return true;
-            };
+            }
+
             return false;
         });
     }

@@ -3,12 +3,12 @@
 namespace App\Commands\Server;
 
 use App\Backup;
-use App\Commands\BaseCommand;
 use App\Server;
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\QueryException;
+use App\Commands\BaseCommand;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Database\QueryException;
+use Illuminate\Console\Scheduling\Schedule;
 
 class BackupCommand extends BaseCommand
 {

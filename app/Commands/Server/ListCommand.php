@@ -2,8 +2,8 @@
 
 namespace App\Commands\Server;
 
-use App\Commands\BaseCommand;
 use App\Server;
+use App\Commands\BaseCommand;
 
 class ListCommand extends BaseCommand
 {
@@ -27,7 +27,7 @@ class ListCommand extends BaseCommand
         Server::all()->each(function ($server) use (&$data, $includePath) {
             $data[$server->name] = [];
             $data[$server->name]['Server'] = $server->name;
-            $data[$server->name]['Status'] = $server->pid ? "<info>UP</info>" : "<comment>DOWN</comment>";
+            $data[$server->name]['Status'] = $server->pid ? '<info>UP</info>' : '<comment>DOWN</comment>';
 
             if ($includePath) {
                 $data[$server->name]['Path'] = $server->path;

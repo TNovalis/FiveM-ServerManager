@@ -3,8 +3,8 @@
 namespace App\Commands\Config;
 
 use App\Commands\BaseCommand;
-use PhpSchool\CliMenu\Builder\CliMenuBuilder;
 use PhpSchool\CliMenu\CliMenu;
+use PhpSchool\CliMenu\Builder\CliMenuBuilder;
 
 class MenuCommand extends BaseCommand
 {

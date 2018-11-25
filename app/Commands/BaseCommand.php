@@ -22,7 +22,7 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * Makes sure FiveM is installed
+     * Makes sure FiveM is installed.
      */
     protected function runChecks()
     {
@@ -33,7 +33,7 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * Get the server from the user
+     * Get the server from the user.
      *
      * @param null $serverName
      *

@@ -24,7 +24,7 @@ class StartCommand extends BaseCommand
 
         $startCommand = "screen -dmS fivem-$server->name $fivem/run.sh +exec $server->path/server.cfg";
 
-        if(!empty($license = $this->setting('license'))) {
+        if (! empty($license = $this->setting('license'))) {
             $startCommand .= " +set sv_licenseKey $license";
         }
 
@@ -35,11 +35,10 @@ class StartCommand extends BaseCommand
         $server->status = $started;
         $server->save();
 
-        if($started) {
+        if ($started) {
             $this->info("'$server->name' has been started.");
         } else {
             $this->error("'$server->name' could not be started!");
         }
-
     }
 }

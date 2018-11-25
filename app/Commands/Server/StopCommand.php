@@ -28,7 +28,7 @@ class StopCommand extends BaseCommand
             exit;
         }
 
-        if(! $this->option('no-warning')) {
+        if (! $this->option('no-warning')) {
             $this->warn('Sending server shutdown message...');
             $this->call('server:say', ['name' => $server->name, 'message' => 'The server is shutting down!', '-q' => true]);
             sleep(3);

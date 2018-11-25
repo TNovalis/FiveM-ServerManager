@@ -2,8 +2,8 @@
 
 namespace App\Commands\Server;
 
-use App\Commands\BaseCommand;
 use App\Setting;
+use App\Commands\BaseCommand;
 
 class ConsoleCommand extends BaseCommand
 {
@@ -16,7 +16,7 @@ class ConsoleCommand extends BaseCommand
     protected $fxVersionNumber;
 
     /**
-     * Open the server console
+     * Open the server console.
      */
     public function handle()
     {

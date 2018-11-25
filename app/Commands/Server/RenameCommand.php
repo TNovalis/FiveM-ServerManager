@@ -2,8 +2,8 @@
 
 namespace App\Commands\Server;
 
-use App\Commands\BaseCommand;
 use App\Server;
+use App\Commands\BaseCommand;
 
 class RenameCommand extends BaseCommand
 {

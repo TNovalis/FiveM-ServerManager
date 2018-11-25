@@ -2,8 +2,8 @@
 
 namespace App\Commands\Server;
 
-use App\Commands\BaseCommand;
 use App\Server;
+use App\Commands\BaseCommand;
 use Illuminate\Console\Scheduling\Schedule;
 
 class FixCommand extends BaseCommand
@@ -13,7 +13,7 @@ class FixCommand extends BaseCommand
     protected $description = 'Fix a crashed server';
 
     /**
-     * Restart the server
+     * Restart the server.
      */
     public function handle()
     {
