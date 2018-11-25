@@ -6,49 +6,39 @@ use App\Commands\BaseCommand;
 
 class StopCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'server:stop {name? : The server name} {--nw|no-warning : Don\'t show a warning}';
+    protected $signature = 'server:stop {name : The name of the server} {--nw|no-warning : Don\'t show a warning}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Stop a server';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($servers) = $this->getConfig();
+        $this->runChecks();
 
-        list($server, $serverName) = $this->getServer();
+        $server = $this->getServer();
 
-        if (empty($this->getServerStatus()[$serverName])) {
+        if ($server->crashed) {
+            $this->warn('Server crashed, fixing status...');
+            $server->status = false;
+            $server->save();
+            exit;
+        }
+
+        if (! $server->pid) {
             $this->warn('That server is not up!');
             exit;
         }
 
-        if (! $this->option('no-warning')) {
+        if(! $this->option('no-warning')) {
             $this->warn('Sending server shutdown message...');
-            $this->call('server:say', ['name' => $serverName, 'message' => 'The server is shutting down!', '-q' => true]);
+            $this->call('server:say', ['name' => $server->name, 'message' => 'The server is shutting down!', '-q' => true]);
             sleep(3);
         }
 
-        exec("screen -XS fivem-$serverName quit");
+        exec("cd $server->path; screen -XS fivem-$server->name quit");
 
-        $server['status'] = false;
-        $servers[$serverName] = $server;
+        $server->status = false;
+        $server->save();
 
-        $this->saveServers($servers);
-
-        $this->info("The '$serverName' server has been stopped.");
+        $this->info("'$server->name' has been stopped");
     }
 }

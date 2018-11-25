@@ -6,52 +6,40 @@ use App\Commands\BaseCommand;
 
 class StartCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'server:start {name? : The name of the server}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Start a server';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($servers, $settings) = $this->getConfig();
+        $this->runChecks();
 
-        list($server, $serverName) = $this->getServer();
+        $fivem = $this->setting('fivem-path');
+        $server = $this->getServer();
 
-        $fivemPath = $settings['fivem-path'];
-        $serverPath = $server['path'];
-
-        if (! empty($this->getServerStatus()[$serverName])) {
+        if ($server->pid) {
             $this->warn('That server is already up!');
             exit;
         }
 
-        $key = '';
+        $startCommand = "screen -dmS fivem-$server->name $fivem/run.sh +exec $server->path/server.cfg";
 
-        if (isset($settings['license'])) {
-            $key = '+set sv_licenseKey "'.$settings['license'].'"';
+        if(!empty($license = $this->setting('license'))) {
+            $startCommand .= " +set sv_licenseKey $license";
         }
 
-        exec("cd $serverPath; screen -dmS fivem-$serverName $fivemPath/run.sh +exec $serverPath/server.cfg $key");
+        exec("cd $server->path; $startCommand");
 
-        $server['status'] = true;
-        $servers[$serverName] = $server;
+        $started = $server->pid;
 
-        $this->saveServers($servers);
+        $server->status = $started;
+        $server->save();
 
-        $this->info("The '$serverName' server has been started.");
+        if($started) {
+            $this->info("'$server->name' has been started.");
+        } else {
+            $this->error("'$server->name' could not be started!");
+        }
+
     }
 }

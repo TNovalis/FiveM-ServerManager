@@ -3,47 +3,32 @@
 namespace App\Commands\FiveM;
 
 use App\Commands\BaseCommand;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\File;
+use Weidner\Goutte\GoutteFacade;
 
 class InstallCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'fivem:install {path? : The path to the server}';
+    protected $signature = 'fivem:install {path?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Install the server files';
+    protected $description = 'Install the FiveM server files';
 
     protected $path;
 
     protected $fxVersionNumber;
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * Install the FiveM server files
      */
-    public function handle(): void
+    public function handle()
     {
-        try {
-            $settings = json_decode(Storage::get('settings.json'), true);
-        } catch (FileNotFoundException $e) {
-            $this->call('create:files');
-            $settings = [];
+        if (! empty($this->setting('fivem-path')) && ! $this->confirm('FiveM is already installed, do you want to continue?')) {
+            exit;
         }
 
         $path = $this->argument('path');
 
         if (empty($path)) {
-            $path = $this->ask('Path');
+            $path = $this->ask('Where do you want to install the FiveM server?');
         }
 
         $this->path = realpath(str_replace('~', $_SERVER['HOME'], $path));
@@ -52,29 +37,21 @@ class InstallCommand extends BaseCommand
 
         $this->downloadFiles();
 
-        $this->checkFiles();
-
         $this->setPermissions();
 
-        $settings['fivem-path'] = $this->path;
-        $settings['fivem-version'] = $this->fxVersionNumber;
-        Storage::put('settings.json', json_encode($settings));
-
+        $this->setting('fivem-path', $this->path);
+        $this->setting('fivem-version', $this->fxVersionNumber);
         $this->info('FiveM has been downloaded and installed!');
     }
 
     protected function checkDirectory()
     {
-        if (! is_dir($this->path)) {
+        if (! $this->path) {
             $this->error('That directory does not exist!');
             exit;
         }
 
-        if (! (count(scandir(realpath($this->path))) == 2)) {
-            $confirm = $this->confirm('That directory is not empty, are you sure?');
-        }
-
-        if (isset($confirm) && ($confirm == false)) {
+        if (count(File::files($this->path)) && ! $this->confirm('That directory is not empty, are you sure?')) {
             exit;
         }
     }
@@ -82,31 +59,34 @@ class InstallCommand extends BaseCommand
     protected function downloadFiles()
     {
         $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
-        $newestFXVersion = '';
-        $tail = 1;
-        while (! is_numeric(substr($newestFXVersion, 0, 3))) {
-            $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tac | sed '".$tail."q;d' | awk -F[\>\<] '{print $3}'");
-            $tail++;
-        }
 
-        $this->fxVersionNumber = strtok($newestFXVersion, '-');
-        $this->info($this->fxVersionNumber);
+        $crawler = GoutteFacade::request('GET', $buildsURL);
+        $newestBuild = collect($crawler->filter('a')->each(function ($n) use ($buildsURL) {
+            $link = $n->attr('href');
+            if (! is_numeric(substr($link, 0, 3))) {
+                return null;
+            }
+            $version = explode('-', trim($link, '/'))[0];
 
-        $newestFXLink = $buildsURL.$newestFXVersion.'fx.tar.xz';
+            return ['version' => intval($version), 'link' => $buildsURL.$link.'fx.tar.xz'];
+        }))->filter()->sortByDesc('version')->first();
+        $this->fxVersionNumber = $newestBuild['version'];
+        $link = $newestBuild['link'];
 
-        $this->info('Downloading and extracting files...');
-        exec("cd $this->path; curl -sO $newestFXLink; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
+        $this->comment('Downloading and extracting files...');
+        exec("cd $this->path; curl -sO $link; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
     }
 
     protected function checkFiles()
     {
         $files = [
             'run.sh',
+            'alpine',
         ];
 
         foreach ($files as $file) {
             if (! file_exists("$this->path/$file")) {
-                $this->error('An error occurred, try again later.');
+                $this->error('The install failed, try again later');
                 exit;
             }
         }

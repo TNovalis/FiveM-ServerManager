@@ -6,42 +6,29 @@ use App\Commands\BaseCommand;
 
 class SayCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'server:say {name?} {message?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Send a message to the server';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($server, $serverName) = $this->getServer();
+        $this->runChecks();
+
+        $server = $this->getServer();
 
         $message = $this->argument('message');
 
         if (empty($message)) {
-            $message = $this->ask('What is your message');
+            $message = $this->ask('What\'s your message');
         }
 
         $message = addslashes($message);
 
-        if (! $this->getServerStatus()[$serverName]) {
-            $this->error('That server is not up!');
+        if (! $server->pid) {
+            $this->warn('That server is not up!');
             exit;
         }
 
-        exec("screen -S fivem-$serverName -X stuff 'say $message^M'");
+        exec("screen -S fivem-$server->name -X stuff 'say $message^M'");
     }
 }

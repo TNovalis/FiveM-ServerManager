@@ -2,33 +2,41 @@
 
 A better FiveM Server Manager
 
-#### When will this be out of alpha?
+[Patreon](https://www.patreon.com/tnovalis) - [Discord](https://discord.gg/6uaVZxQ)
 
-I don't know. It's usable, at least, I use it for my servers.
+#### Features
+- Install and update FiveM
+- Servers
+  - Add
+  - Delete
+  - Start, stop and restart
+  - Console
+- GUI Config
+- Automatic server restarts
+  - Timed and for crashes
+- Automatic server backups
 
-#### Any upcoming features?
-
-Automatic server restarts, probably.
-
-#### How do I install this?
+#### Installation
 
 There are two ways to install FSM.
 
 ##### Option One
 
-Starting from `0.0.9` and after, in the releases there is an executable file named `fsm`.
+Starting from `0.0.9` and after, in releases there is an executable file named `fsm`.
 
 You need to download this and put it into one of the locations in your `$PATH`
 
 Also make sure it is marked executable `chmod +x fsm`
 
 ###### Requirements
-- PHP 7.1
+- PHP 7.1+
   - PHP MBString
+  - PHP JSON
+  - PHP SQLite3
 - Linux
 - Screen
 
-Ubuntu 16+ users: `sudo apt install php php-mbstring screen`
+Ubuntu 16+ users: `sudo apt install php php-mbstring php-json php-sqlite3 screen`
 
 ##### Option Two
 
@@ -36,7 +44,7 @@ You must have `composer` installed *and its own requirements*
 
 Run the following command:
 ```
-composer global require tnovalis/fivem-servermanager
+composer global require tnovalis/fivem-servermanager --no-dev
 ```
 
 Once you do that you need to add your composer vendor bin to you `$PATH`
@@ -46,15 +54,25 @@ On Ubuntu, and most Linux distros this is in `.config/composer/vendor/bin`
 If you use Bash for your shell you need to edit `.profile` to add it to your `$PATH`
 
 ###### Requirements
-- PHP 7.1
+- PHP 7.1+
   - PHP MBString
+  - PHP JSON
+  - PHP SQLite3
+  - PHP Zip
 - Linux
 - Screen
 - The few of composers requirements
 
-Ubuntu 16+ users: `sudo apt install php php-mbstring php-zip composer screen`
+Ubuntu 16+ users: `sudo apt install php php-mbstring php-json php-zip composer screen`
 
-#### How do I use this?
+#### Upgrade Guide
+
+Migrating from pre-v1 is simple, all you need to do is the following command:
+```
+fsm self:migrate
+```
+
+#### Usage
 
 The first command you should run is this:
 ```
@@ -65,9 +83,9 @@ This will install FiveM and save the path for when starting the server.
 Since FiveM requires a license key, you must get one [here](https://keymaster.fivem.net)
 FSM allows you to easily set it. 
 ```
-fsm fivem:license [<LICENSE>]
+fsm config:menu
 ```
-No need to edit any config files if you need to change it later, FSM will take care of it for you.
+Navigate to `Set License`, press `Enter` and put your license.
 
 After that I recommend running this:
 ```
@@ -84,11 +102,16 @@ All you need to do is put the following into your cron:
 ```
 No support will be given on how to access your cron file.
 
-#### What about the other commands?
+#### Other Commands
 
 **To update FiveM**
 ```
 fsm fivem:update
+```
+
+**To display all config settings**
+```
+fsm config:dump
 ```
 
 **To create a server**
@@ -120,12 +143,12 @@ fsm server:stop [<NAME>] [--no-warning]
 ```
 If you specify `--no-warning` the server will not send a message in chat about the shutdown.
 
-**To restart a server**
+**To restart a server** *schedulable*
 ```
 fsm server:restart [<NAME>] [--no-warning]
 ```
 
-**To backup a server**
+**To backup a server** *schedulable*
 ```
 fsm server:backup [<NAME>]
 ```
@@ -141,9 +164,7 @@ If you specify `--no-backup` the server will not be backed up before removal.
 ```
 fsm server:rename [<NAME>] [<NEW-NAME>]
 ```
-
-**To fix a crashed server** - *scheduled*
+**To fix crashed servers** *schedulable*
 ```
 fsm server:fix
 ```
-This command is **scheduled** meaning you can run it if you want but it will be ran by `fsm schedule:run`

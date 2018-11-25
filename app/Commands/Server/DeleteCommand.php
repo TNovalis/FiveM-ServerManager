@@ -6,53 +6,33 @@ use App\Commands\BaseCommand;
 
 class DeleteCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'server:delete {name? : The name of the server} {--no-backup : Don\'t backup the server}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Delete a server';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($servers) = $this->getConfig();
+        $this->runChecks();
 
-        list($server, $serverName) = $this->getServer();
+        $server = $this->getServer();
 
         if (! $this->confirm('Are you sure you want to delete this server?')) {
-            $this->info('Canceling.');
             exit;
         }
 
-        $path = $server['path'];
-
-        if (! empty($this->getServerStatus()[$serverName])) {
+        if ($server->pid) {
             $this->warn('Server is being shutdown!');
-            exec("screen -XS fivem-$serverName quit");
+            $this->call('server:stop', ['name' => $server->name, '-q' => true]);
         }
 
         if (! $this->option('no-backup')) {
-            $this->call('server:backup', ['name' => $serverName]);
+            $this->call('server:backup', ['name' => $server->name]);
         }
 
-        exec("rm -rf $path");
+        exec("rm -rf $server->path");
 
-        $this->info("$serverName server deleted!");
+        $server->delete();
 
-        unset($servers[$serverName]);
-
-        $this->saveServers($servers);
+        $this->info("'$server->name' has been deleted!");
     }
 }

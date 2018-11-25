@@ -3,31 +3,17 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
+use App\Server;
 
 class ListCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'server:list {--path : Show path in the table}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'List the servers and their status';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($servers) = $this->getConfig();
+        $this->runChecks();
 
         $includePath = $this->option('path');
 
@@ -38,25 +24,15 @@ class ListCommand extends BaseCommand
         }
 
         $data = [];
-        $status = $this->getServerStatus();
+        Server::all()->each(function ($server) use (&$data, $includePath) {
+            $data[$server->name] = [];
+            $data[$server->name]['Server'] = $server->name;
+            $data[$server->name]['Status'] = $server->pid ? "<info>UP</info>" : "<comment>DOWN</comment>";
 
-        foreach ($servers as $name => $sData) {
-            $data[$name] = [];
-            $data[$name]['Server'] = $name;
-            if ($sData['status'] && ! $status[$name]) {
-                $this->promptServerCrashed($name);
-            }
-            $sData['status'] = $this->getServerStatus()[$name];
-            if ($sData['status']) {
-                $data[$name]['Status'] = '<info>UP</info>';
-            } else {
-                $data[$name]['Status'] = '<comment>DOWN</comment>';
-            }
             if ($includePath) {
-                $data[$name]['Path'] = $sData['path'];
+                $data[$server->name]['Path'] = $server->path;
             }
-            $servers[$name] = $sData;
-        }
+        });
 
         $this->table($headers, $data);
     }

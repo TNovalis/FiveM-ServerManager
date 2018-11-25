@@ -1,11 +1,10 @@
 <!-- PLEASE READ THE FOLLOWING INSTRUCTIONS -->
 
-<!-- If you are trying to install this on Windows or Mac, screw off. -->
+<!-- If you are trying to install this on Windows or Mac, just stop. -->
 
 <!-- 
 Make sure it isn't a technical question about your system, 
-I don't provide individual support. 
-Unless you're going to pay me.
+I only provide system support to patrons
 -->
 
 <!-- Also make sure you've read the README, RTFM. -->

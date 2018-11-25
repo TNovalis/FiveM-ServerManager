@@ -2,102 +2,70 @@
 
 namespace App\Commands;
 
-use Illuminate\Support\Facades\Storage;
+use App\Server;
+use App\Setting;
 use LaravelZero\Framework\Commands\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 abstract class BaseCommand extends Command
 {
-    protected function getConfig()
+    protected function setting($option, $value = null, $type = null)
     {
-        try {
-            $servers = json_decode(Storage::get('servers.json'), true);
-            $settings = json_decode(Storage::get('settings.json'), true);
-        } catch (FileNotFoundException $e) {
+        if ($value === null) {
+            return optional(Setting::find($option))->value;
+        }
+
+        if ($type === null) {
+            $type = gettype($value);
+        }
+
+        return Setting::updateOrCreate(['option' => $option], ['value' => $value, 'type' => $type]);
+    }
+
+    /**
+     * Makes sure FiveM is installed
+     */
+    protected function runChecks()
+    {
+        if (empty($this->setting('fivem-path'))) {
             $this->error('FiveM is not installed! Please run fivem:install');
             exit;
         }
-
-        if (empty($settings['fivem-path'])) {
-            $this->error('FiveM in not installed! Please run fivem:install');
-            exit;
-        }
-
-        return [
-            $servers,
-            $settings,
-        ];
     }
 
-    protected function getServer()
+    /**
+     * Get the server from the user
+     *
+     * @param null $serverName
+     *
+     * @return Server
+     */
+    protected function getServer($serverName = null)
     {
-        list($servers) = $this->getConfig();
-
-        $serverName = $this->argument('name');
+        $internal = false;
 
         if (empty($serverName)) {
-            $serverName = $this->askWithCompletion('Which server', array_keys($servers));
+            $serverName = $this->argument('name');
+        } else {
+            $internal = true;
+        }
+
+        if (empty($serverName)) {
+            $serverName = $this->askWithCompletion('Server Name', Server::all()->pluck('name')->toArray());
         }
 
         $serverName = str_slug($serverName);
 
-        if (empty($servers[$serverName])) {
-            $this->error('That server does not exist!');
-            exit;
+        $server = Server::find($serverName);
+
+        if (empty($server)) {
+            if (! $internal) {
+                $this->error('That server does not exist!');
+                exit;
+            }
+
+            return $server;
         }
 
-        $server = $servers[$serverName];
-
-        return [
-            $server,
-            $serverName,
-        ];
-    }
-
-    protected function getServerPid($serverName)
-    {
-        $status = exec("ps auxw | grep -i fivem-$serverName | grep -v grep | awk '{print $2}'");
-
-        return $status;
-    }
-
-    protected function getServerStatus()
-    {
-        list($servers) = $this->getConfig();
-        $status = [];
-        exec("ps auxw | grep -i fivem- | grep -v grep | awk '{print $13}'", $status);
-
-        $status = str_replace('fivem-', '', $status);
-        $serverStatus = [];
-
-        foreach ($servers as $name => $server) {
-            $serverStatus[$name] = in_array($name, $status);
-        }
-
-        return $serverStatus;
-    }
-
-    protected function promptServerCrashed($serverName)
-    {
-        list($servers) = $this->getConfig();
-
-        $this->warn("$serverName may have crashed!");
-        if ($this->confirm('Do you want to put it back up?')) {
-            $this->call('server:start', ['name' => $serverName, '-q' => true]);
-        } else {
-            $server['status'] = false;
-            $servers[$serverName] = $server;
-            $this->saveServers($servers);
-        }
-    }
-
-    protected function saveServers($servers)
-    {
-        return Storage::put('servers.json', json_encode($servers));
-    }
-
-    protected function saveSettings($settings)
-    {
-        return Storage::put('settings.json', json_encode($settings));
+        return $server;
     }
 }

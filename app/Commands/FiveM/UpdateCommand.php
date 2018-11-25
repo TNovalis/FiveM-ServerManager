@@ -3,86 +3,75 @@
 namespace App\Commands\FiveM;
 
 use App\Commands\BaseCommand;
+use Weidner\Goutte\GoutteFacade;
 
 class UpdateCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'fivem:update';
+    protected $signature = 'fivem:update {--force : Ignore warning about up-to-date server}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Update the server files';
+    protected $description = 'Update the FiveM server files';
 
     protected $path;
 
-    protected $fxVersionNumber;
-
     protected $version;
 
+    protected $fxVersionNumber;
+
     /**
-     * Execute the console command.
+     * Update the FiveM server files
      *
      * @return mixed
      */
-    public function handle(): void
+    public function handle()
     {
-        list($servers, $settings) = $this->getConfig();
+        $this->runChecks();
 
-        $this->path = $settings['fivem-path'];
-        $this->version = $settings['fivem-version'];
-
-        if (empty($this->path)) {
-            $this->error('FiveM is not installed! Please run server:install');
-            exit;
-        }
+        $this->path = $this->setting('fivem-path');
+        $this->version = $this->setting('fivem-version');
 
         $this->downloadFiles();
 
-        $this->checkFiles();
-
         $this->setPermissions();
 
-        $settings['fivem-version'] = $this->fxVersionNumber;
-        $this->saveServers($servers);
-
+        $this->setting('fivem-version', $this->fxVersionNumber);
         $this->info('FiveM has been updated!');
     }
 
     protected function downloadFiles()
     {
         $buildsURL = 'https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/';
-        $newestFXVersion = '';
-        $tail = 1;
-        while (! is_numeric(substr($newestFXVersion, 0, 3))) {
-            $newestFXVersion = exec("curl $buildsURL -s | grep '<a href' | tac | sed '".$tail."q;d' | awk -F[\>\<] '{print $3}'");
-            $tail++;
+
+        $crawler = GoutteFacade::request('GET', $buildsURL);
+        $newestBuild = collect($crawler->filter('a')->each(function ($n) use ($buildsURL) {
+            $link = $n->attr('href');
+            if (! is_numeric(substr($link, 0, 3))) {
+                return null;
+            }
+            $version = explode('-', trim($link, '/'))[0];
+
+            return ['version' => intval($version), 'link' => $buildsURL.$link.'fx.tar.xz'];
+        }))->filter()->sortByDesc('version')->first();
+        $this->fxVersionNumber = $newestBuild['version'];
+        $link = $newestBuild['link'];
+
+        if ($this->version == $this->fxVersionNumber && ! $this->option('force') && ! $this->confirm('The FiveM server is already up-to-date, continue?')) {
+            exit;
         }
 
-        $this->fxVersionNumber = strtok($newestFXVersion, '-');
-        $this->info($this->fxVersionNumber);
-
-        $newestFXLink = $buildsURL.$newestFXVersion.'fx.tar.xz';
-
-        $this->info('Downloading and extracting files...');
-        exec("cd $this->path; curl -sO $newestFXLink; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
+        $this->comment('Downloading and extracting files...');
+        exec("cd $this->path; curl -sO $link; tar xf fx.tar.xz 2> /dev/null; rm fx.tar.xz");
     }
 
     protected function checkFiles()
     {
         $files = [
             'run.sh',
+            'alpine',
         ];
 
         foreach ($files as $file) {
             if (! file_exists("$this->path/$file")) {
-                $this->error('An error occurred, try again later.');
+                $this->error('The install failed, try again later');
                 exit;
             }
         }

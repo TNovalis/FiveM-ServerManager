@@ -1,8 +1,9 @@
-# you probably don't want to change these!
-# only change them if you're using a server with multiple network interfaces
+# You probably don't want to change these!
+# Only change them if you're using a server with multiple network interfaces.
 endpoint_add_tcp "0.0.0.0:30120"
 endpoint_add_udp "0.0.0.0:30120"
 
+# These resources will start by default.
 start mapmanager
 start chat
 start spawnmanager
@@ -13,36 +14,56 @@ start rconlog
 start scoreboard
 start playernames
 
+# This allows players to use scripthook based plugins such as lambda menu.
+# Set this to 0 to disallow scripthook.
 sv_scriptHookAllowed 1
 
-# change this
-#rcon_password yay
+# Uncomment this to enable RCON. Make sure to change the password.
+#rcon_password changeme
 
+# A comma-separated list of tags for your server.
+# For example:
+# - sets tags "drifting, cars, racing"
+# Or:
+# - sets tags "roleplay, military, tanks"
+sets tags "default, fsm"
+
+# Set an optional server info and connecting banner image url.
+# Size doesn't matter, any banner sized image will be fine.
+#sets banner_detail "http://url.to/image.png"
+#sets banner_connecting "http://url.to/image.png"
+
+# Set your server's hostname
 sv_hostname "Created by FSM"
 
-# nested configs!
+# Nested configs!
 #exec server_internal.cfg
 
-# loading a server icon (96x96 PNG file)
+# Loading a server icon (96x96 PNG file)
 #load_server_icon myLogo.png
 
-# convars for use from script
+# convars which can be used in scripts
 set temp_convar "hey world!"
 
-# disable announcing? clear out the master by uncommenting this
+# Uncomment this line if you do not want your server to be listed in the server browser.
 #sv_master1 ""
 
-# want to only allow players authenticated with a third-party provider like Steam?
+# Want to only allow players authenticated with a third-party provider like Steam?
+# Don't forget Social Club is a third party provider too!
 #sv_authMaxVariance 1
 #sv_authMinTrust 5
 
-# add system admins
+# Add system admins
 add_ace group.admin command allow # allow all commands
 add_ace group.admin command.quit deny # but don't allow quit
 add_principal identifier.steam:110000112345678 group.admin # add the admin to the group
 
-# remove the # to hide player endpoints in external log output
-#sv_endpointprivacy true
+# Hide player endpoints in external log output.
+sv_endpointprivacy true
 
-# server slots limit (default to 30)
+# Server player slot limit (must be between 1 and 32)
 sv_maxclients 32
+
+# License key for your server (https://keymaster.fivem.net)
+# FSM can set this with `fivem:license` for all servers
+# sv_licenseKey changeme

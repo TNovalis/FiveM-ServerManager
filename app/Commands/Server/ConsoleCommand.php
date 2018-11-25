@@ -3,42 +3,41 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
+use App\Setting;
 
 class ConsoleCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'server:console {name? : The name of the server} {--no-warning : Don\'t show the warning}';
+    protected $signature = 'server:console {name? : The name of the server} {--no-warning : Don\'t show usage warnings}';
+
+    protected $description = 'Open the server console';
+
+    protected $path;
+
+    protected $fxVersionNumber;
 
     /**
-     * The console command description.
-     *
-     * @var string
+     * Open the server console
      */
-    protected $description = 'See the server console';
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(): void
+    public function handle()
     {
-        list($server, $serverName) = $this->getServer();
+        $this->runChecks();
 
-        $status = $this->getServerStatus();
+        $server = $this->getServer();
 
-        if (empty($this->getServerStatus()[$serverName])) {
+        if (! $server->pid) {
             $this->warn('That server is not up!');
             exit;
         }
 
-        if ($server['status'] && ! $status[$serverName]) {
-            $this->promptServerCrashed($serverName);
-            exit;
+        if ($server->crashed) {
+            if (Setting::find('crash_fix.enabled')) {
+                $this->info('The server crashed, restarting it.');
+                $this->call('server:start', ['name' => $server->name]);
+            } else {
+                if ($this->confirm('The server crashed, would you like to restart it?')) {
+                    $this->call('server:start', ['name' => $server->name]);
+                }
+            }
         }
 
         if (! $this->option('no-warning')) {
@@ -46,6 +45,6 @@ class ConsoleCommand extends BaseCommand
             sleep(2);
         }
 
-        system("screen -r fivem-$serverName");
+        system("screen -r fivem-$server->name");
     }
 }

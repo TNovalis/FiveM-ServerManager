@@ -3,50 +3,32 @@
 namespace App\Commands\Server;
 
 use App\Commands\BaseCommand;
+use App\Server;
 use Illuminate\Console\Scheduling\Schedule;
 
 class FixCommand extends BaseCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'server:fix';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = '[Scheduled] Fixes crashed servers';
+    protected $description = 'Fix a crashed server';
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * Restart the server
      */
-    public function handle(): void
+    public function handle()
     {
-        list($servers) = $this->getConfig();
-
-        $status = $this->getServerStatus();
-        $serverStarted = false;
-        foreach ($servers as $name => $server) {
-            if ($server['status'] && ! $status[$name]) {
-                $serverStarted = true;
-                $this->warn($name.' was down, restarting.');
-                $this->call('server:start', ['name' => $name, '-q' => true]);
+        Server::all()->each(function ($server) {
+            if ($server->crashed) {
+                $this->warn("$server->name is down, restarting");
+                $this->call('server:start', ['name' => $server->name, '-q' => true]);
             }
-        }
-
-        if (! $serverStarted) {
-            $this->info('No servers were down!');
-        }
+        });
     }
 
-    public function schedule(Schedule $schedule): void
+    public function schedule(Schedule $schedule)
     {
-        $schedule->command(static::class)->everyMinute();
+        $schedule->command(static::class)->everyMinute()->when(function () {
+            return $this->setting('crash_fix.enabled');
+        });
     }
 }
