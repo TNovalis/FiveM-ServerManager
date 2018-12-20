@@ -28,6 +28,12 @@ You need to download this and put it into one of the locations in your `$PATH`
 
 Also make sure it is marked executable `chmod +x fsm`
 
+Currently you need to make the database file yourself (unless you are migrating from pre-v1). Do the following:
+```sh
+mkdir ~/.fsm
+touch ~/.fsm/fsm.sqlite
+```
+
 ###### Requirements
 - PHP 7.1+
   - PHP MBString
@@ -52,6 +58,12 @@ Once you do that you need to add your composer vendor bin to you `$PATH`
 On Ubuntu, and most Linux distros this is in `.config/composer/vendor/bin`
 
 If you use Bash for your shell you need to edit `.profile` to add it to your `$PATH`
+
+Currently you need to make the database file yourself (unless you are migrating from pre-v1). Do the following:
+```sh
+mkdir ~/.fsm
+touch ~/.fsm/fsm.sqlite
+```
 
 ###### Requirements
 - PHP 7.1+
